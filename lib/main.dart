@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_tutorials/AutoDispose%20Modifier%20with%20timeout%20cashing/home_screen.dart';
+
 import 'package:riverpod_tutorials/read_using_cosumer.dart';
 import 'package:riverpod_tutorials/services/api_service.dart';
 import 'package:riverpod_tutorials/state%20notifier%20provider/counterDemo.dart';
@@ -10,6 +11,8 @@ import 'package:riverpod_tutorials/state%20notifier%20provider/state_notifier_pr
 import 'package:riverpod_tutorials/state_provider.dart';
 import 'package:riverpod_tutorials/stream%20provider/stream%20screen.dart';
 
+import 'controllers/trapflix video list screen.dart';
+import 'controllers/video_streaming_controller.dart';
 import 'extend statefull_widget.dart';
 import 'extend_cosumer_widget.dart';
 import 'family_provider.dart';
@@ -20,6 +23,10 @@ import 'multi value family  provider.dart';
 final nameProvider = Provider<String>((ref) => "hello samih");
 
 final counterProvider = StateProvider<int>((ref) => 0);
+
+final streamingVideoController = Provider<StreamingVideosController>((ref) {
+  return StreamingVideosController()..getStreamingVideo();
+});
 
 void main() {
   runApp(const ProviderScope(child: MyApp()));
@@ -46,7 +53,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: MultiValueFamilyProviderScreen(),
+      home: VideoListScreen(),
     );
   }
 }

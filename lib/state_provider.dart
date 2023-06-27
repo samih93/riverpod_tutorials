@@ -32,7 +32,7 @@ class CounterScreen extends ConsumerWidget {
               // reset state
               //    ref.invalidate(counterProvider);
               //!  or
-              ref.refresh(counterProvider);
+              return ref.refresh(counterProvider);
             },
           )
         ],
