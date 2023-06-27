@@ -12,8 +12,10 @@ import 'package:riverpod_tutorials/stream%20provider/stream%20screen.dart';
 
 import 'extend statefull_widget.dart';
 import 'extend_cosumer_widget.dart';
+import 'family_provider.dart';
 import 'model/notification_model.dart';
 import 'future provider notification screen/notification_screen.dart';
+import 'multi value family  provider.dart';
 
 final nameProvider = Provider<String>((ref) => "hello samih");
 
@@ -44,7 +46,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const HomeScreen(),
+      home: MultiValueFamilyProviderScreen(),
     );
   }
 }
