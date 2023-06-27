@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_tutorials/AutoDispose%20Modifier%20with%20timeout%20cashing/home_screen.dart';
 import 'package:riverpod_tutorials/read_using_cosumer.dart';
 import 'package:riverpod_tutorials/services/api_service.dart';
 import 'package:riverpod_tutorials/state%20notifier%20provider/counterDemo.dart';
@@ -18,8 +19,6 @@ final nameProvider = Provider<String>((ref) => "hello samih");
 
 final counterProvider = StateProvider<int>((ref) => 0);
 
-final stateCounterProvider =
-    StateNotifierProvider<CounterDemo, int>((ref) => CounterDemo());
 void main() {
   runApp(const ProviderScope(child: MyApp()));
 }
@@ -45,7 +44,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const MyStreamScreen(),
+      home: const HomeScreen(),
     );
   }
 }

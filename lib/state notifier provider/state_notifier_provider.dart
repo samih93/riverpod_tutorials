@@ -4,6 +4,11 @@ import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_tutorials/main.dart';
 
+import 'counterDemo.dart';
+
+final stateCounterProvider =
+    StateNotifierProvider<CounterDemo, int>((ref) => CounterDemo());
+
 class MyScreen extends ConsumerWidget {
   const MyScreen({super.key});
 
