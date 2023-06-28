@@ -25,7 +25,7 @@ final nameProvider = Provider<String>((ref) => "hello samih");
 final counterProvider = StateProvider<int>((ref) => 0);
 
 final streamingVideoController = Provider<StreamingVideosController>((ref) {
-  return StreamingVideosController()..getStreamingVideo();
+  return StreamingVideosController();
 });
 
 void main() {
