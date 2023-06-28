@@ -1,32 +1,48 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:riverpod_tutorials/main.dart';
 
 import '../model/streaming_video_model.dart';
 import 'package:http/http.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class StreamingVideosController {
-  var streamingVideosProvider =
-      FutureProvider.autoDispose<List<StreamingVideoModel>>(
-          (ref) => ref.read(streamingVideoController).getStreamingVideo());
+class StreamingVideosNotifier extends ChangeNotifier {
+  List<StreamingVideoModel> streamingVideos = [];
 
+  bool isloading = false;
   Future<List<StreamingVideoModel>> getStreamingVideo() async {
-    List<StreamingVideoModel> list = [];
+    isloading = true;
+    notifyListeners();
     Response response = await get(Uri.parse(
         'https://raw.githubusercontent.com/samih93/riverpod_tutorials/master/api.txt'));
     if (response.statusCode == 200) {
-      // print(response.body);
+      print(response.body);
       var data = jsonDecode(response.body);
       print((data as List).length);
-      list = List.from((data).map((e) => StreamingVideoModel.fromJson(e)));
+      streamingVideos =
+          List.from((data).map((e) => StreamingVideoModel.fromJson(e)));
       //  print("list videos lenght :" + list.length.toString());
+      isloading = false;
+      notifyListeners();
     } else {
       throw Exception(response.reasonPhrase);
     }
-    return list;
+    return streamingVideos;
+  }
+
+  removeMovieById(String id) {
+    print("deleted ${id}");
+    streamingVideos.removeWhere((element) => element.id == id);
+    print(streamingVideos.length);
+    notifyListeners();
   }
 }
+
+final StreamingVideosController =
+    ChangeNotifierProvider<StreamingVideosNotifier>(
+  (ref) => StreamingVideosNotifier()..getStreamingVideo(),
+);
 
 // addLikeToVideo({
 //   required int userId,

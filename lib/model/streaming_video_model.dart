@@ -148,7 +148,7 @@ class StreamingVideoModel {
       this.usersdisLikes});
 
   StreamingVideoModel.fromJson(Map<String, dynamic> json) {
-    // id = json['id'];
+    id = json['id'];
     // videoId = json['video_id'];
     // userId = json['user_id'];
     // shortId = json['short_id'];

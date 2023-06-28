@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_tutorials/controllers/video_streaming_controller.dart';
 import 'package:riverpod_tutorials/main.dart';
 
 import '../AutoDispose Modifier with timeout cashing/counter_screen.dart';
@@ -9,30 +10,46 @@ class VideoListScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    var videos =
-        ref.watch(ref.read(streamingVideoController).streamingVideosProvider);
+    var streamingController = ref.watch(StreamingVideosController);
     return Scaffold(
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => DisposeCounterScreen()));
-          },
-          child: Icon(Icons.add),
-        ),
-        appBar: AppBar(title: Text("Streaming video")),
-        body: videos.when(
-            data: (data) => ListView.separated(
-                itemBuilder: (context, index) => Column(
-                      children: [
-                        Image.network(data[index].thumbnail.toString()),
-                        Text("${data[index].title}")
-                      ],
-                    ),
-                separatorBuilder: (context, index) => SizedBox(
-                      height: 10,
-                    ),
-                itemCount: data.length),
-            error: (error, stackTrace) => Text(error.toString()),
-            loading: () => Center(child: CircularProgressIndicator())));
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => DisposeCounterScreen()));
+        },
+        child: Icon(Icons.add),
+      ),
+      appBar: AppBar(title: Text("Streaming video")),
+      body: streamingController.isloading
+          ? CircularProgressIndicator()
+          : ListView.separated(
+              itemBuilder: (context, index) => Stack(
+                    alignment: AlignmentDirectional.topEnd,
+                    children: [
+                      Column(
+                        children: [
+                          Image.network(streamingController
+                              .streamingVideos[index].thumbnail
+                              .toString()),
+                          Text(
+                              "${streamingController.streamingVideos[index].title}")
+                        ],
+                      ),
+                      IconButton(
+                          onPressed: () {
+                            ref.read(StreamingVideosController).removeMovieById(
+                                streamingController.streamingVideos[index].id!);
+                          },
+                          icon: Icon(
+                            Icons.close,
+                            color: Colors.white,
+                          ))
+                    ],
+                  ),
+              separatorBuilder: (context, index) => SizedBox(
+                    height: 10,
+                  ),
+              itemCount: streamingController.streamingVideos.length),
+    );
   }
 }
