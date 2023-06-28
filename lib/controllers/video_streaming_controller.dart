@@ -10,6 +10,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class StreamingVideosNotifier extends ChangeNotifier {
   List<StreamingVideoModel> streamingVideos = [];
 
+  int counter = 0;
+
   bool isloading = false;
   Future<List<StreamingVideoModel>> getStreamingVideo() async {
     isloading = true;
@@ -35,6 +37,11 @@ class StreamingVideosNotifier extends ChangeNotifier {
     print("deleted ${id}");
     streamingVideos.removeWhere((element) => element.id == id);
     print(streamingVideos.length);
+    notifyListeners();
+  }
+
+  void increment() {
+    counter++;
     notifyListeners();
   }
 }

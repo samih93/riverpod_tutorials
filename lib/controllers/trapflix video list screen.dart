@@ -19,7 +19,16 @@ class VideoListScreen extends ConsumerWidget {
         },
         child: Icon(Icons.add),
       ),
-      appBar: AppBar(title: Text("Streaming video")),
+      appBar: AppBar(
+        title: Text("Streaming video ${streamingController.counter} "),
+        actions: [
+          IconButton(
+              onPressed: () {
+                ref.read(StreamingVideosController).increment();
+              },
+              icon: Icon(Icons.add))
+        ],
+      ),
       body: streamingController.isloading
           ? CircularProgressIndicator()
           : ListView.separated(
