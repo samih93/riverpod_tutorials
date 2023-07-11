@@ -7,49 +7,55 @@ import '../model/streaming_video_model.dart';
 import 'package:http/http.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class StreamingVideosNotifier extends ChangeNotifier {
-  List<StreamingVideoModel> streamingVideos = [];
+final videosProvider = StateProvider<List<StreamingVideoModel>>((ref) => []);
+
+final streamingVideosControllerProvider =
+    StateNotifierProvider<StreamingVideosController, bool>(
+  (ref) => StreamingVideosController(ref),
+);
+
+class StreamingVideosController extends StateNotifier<bool> {
+  final Ref _ref;
+  StreamingVideosController(Ref ref)
+      : _ref = ref,
+        super(false);
 
   int counter = 0;
 
-  bool isloading = false;
-  Future<List<StreamingVideoModel>> getStreamingVideo() async {
-    isloading = true;
-    notifyListeners();
+  Future getStreamingVideo() async {
+    state = true;
     Response response = await get(Uri.parse(
         'https://raw.githubusercontent.com/samih93/riverpod_tutorials/master/api.txt'));
     if (response.statusCode == 200) {
       print(response.body);
       var data = jsonDecode(response.body);
       print((data as List).length);
-      streamingVideos =
-          List.from((data).map((e) => StreamingVideoModel.fromJson(e)));
+
+      _ref.read(videosProvider.notifier).update((state) =>
+          List.from((data).map((e) => StreamingVideoModel.fromJson(e))));
+      state = false;
       //  print("list videos lenght :" + list.length.toString());
-      isloading = false;
-      notifyListeners();
     } else {
       throw Exception(response.reasonPhrase);
     }
-    return streamingVideos;
   }
 
   removeMovieById(String id) {
+    state = true;
     print("deleted ${id}");
-    streamingVideos.removeWhere((element) => element.id == id);
-    print(streamingVideos.length);
-    notifyListeners();
+    _ref.read(videosProvider.notifier).update((state) {
+      state.removeWhere((element) => element.id == id);
+      return state;
+    });
+    state = false;
   }
 
   void increment() {
     counter++;
-    notifyListeners();
   }
 }
 
-final StreamingVideosController =
-    ChangeNotifierProvider<StreamingVideosNotifier>(
-  (ref) => StreamingVideosNotifier()..getStreamingVideo(),
-);
+
 
 // addLikeToVideo({
 //   required int userId,

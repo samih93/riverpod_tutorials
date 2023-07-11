@@ -3,12 +3,11 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_tutorials/AutoDispose%20Modifier%20with%20timeout%20cashing/home_screen.dart';
-
 import 'package:riverpod_tutorials/read_using_cosumer.dart';
 import 'package:riverpod_tutorials/services/api_service.dart';
 import 'package:riverpod_tutorials/state%20notifier%20provider/counterDemo.dart';
 import 'package:riverpod_tutorials/state%20notifier%20provider/state_notifier_provider.dart';
-import 'package:riverpod_tutorials/state_provider.dart';
+import 'package:riverpod_tutorials/state_provider_%20counter%20screen.dart';
 import 'package:riverpod_tutorials/stream%20provider/stream%20screen.dart';
 
 import 'controllers/trapflix video list screen.dart';
@@ -16,25 +15,39 @@ import 'controllers/video_streaming_controller.dart';
 import 'extend statefull_widget.dart';
 import 'extend_cosumer_widget.dart';
 import 'family_provider.dart';
-import 'model/notification_model.dart';
 import 'future provider notification screen/notification_screen.dart';
+import 'model/notification_model.dart';
 import 'multi value family  provider.dart';
+import 'package:routemaster/routemaster.dart';
 
 final nameProvider = Provider<String>((ref) => "hello samih");
 
-final counterProvider = StateProvider<int>((ref) => 0);
+final counterProvider =
+    StateProvider.family<int, int>((ref, counter) => counter);
+
+final routes = RouteMap(routes: {
+  '/': (_) => MaterialPage(
+        child: VideoListScreen(),
+      ),
+  '/multi-family': (_) => MaterialPage(child: MultiValueFamilyProviderScreen()),
+  '/home-page-1': (_) => MaterialPage(child: MyHomePage1()),
+  '/counter-screen/:counter': (info) => MaterialPage(
+      child: CounterScreen(int.parse(info.pathParameters['counter']!))),
+});
 
 void main() {
   runApp(const ProviderScope(child: MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   // This widget is the root of your application.
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
+  Widget build(BuildContext context, WidgetRef ref) {
+    return MaterialApp.router(
+      routerDelegate: RoutemasterDelegate(routesBuilder: (context) => routes),
+      routeInformationParser: RoutemasterParser(),
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -49,7 +62,6 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: VideoListScreen(),
     );
   }
 }

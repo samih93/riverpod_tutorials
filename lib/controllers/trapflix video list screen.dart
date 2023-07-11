@@ -2,63 +2,83 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_tutorials/controllers/video_streaming_controller.dart';
 import 'package:riverpod_tutorials/main.dart';
+import 'package:routemaster/routemaster.dart';
 
 import '../AutoDispose Modifier with timeout cashing/counter_screen.dart';
 
-class VideoListScreen extends ConsumerWidget {
+class VideoListScreen extends ConsumerStatefulWidget {
   const VideoListScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    var streamingController = ref.watch(StreamingVideosController);
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _VideoListScreenState();
+}
+
+class _VideoListScreenState extends ConsumerState<VideoListScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    Future.delayed(Duration(milliseconds: 100)).then((value) {
+      ref.read(streamingVideosControllerProvider.notifier).getStreamingVideo();
+    });
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var isloading = ref.watch(streamingVideosControllerProvider);
+    var videos = ref.watch(videosProvider);
+
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => DisposeCounterScreen()));
+          Routemaster.of(context).push('/counter-screen/${3}');
         },
         child: Icon(Icons.add),
       ),
       appBar: AppBar(
-        title: Text("Streaming video ${streamingController.counter} "),
+        title: Text("Streaming video "),
         actions: [
           IconButton(
               onPressed: () {
-                ref.read(StreamingVideosController).increment();
+                ref
+                    .watch(streamingVideosControllerProvider.notifier)
+                    .getStreamingVideo();
               },
               icon: Icon(Icons.add))
         ],
       ),
-      body: streamingController.isloading
-          ? CircularProgressIndicator()
+      body: isloading
+          ? Center(child: CircularProgressIndicator())
           : ListView.separated(
-              itemBuilder: (context, index) => Stack(
-                    alignment: AlignmentDirectional.topEnd,
-                    children: [
-                      Column(
-                        children: [
-                          Image.network(streamingController
-                              .streamingVideos[index].thumbnail
-                              .toString()),
-                          Text(
-                              "${streamingController.streamingVideos[index].title}")
-                        ],
-                      ),
-                      IconButton(
-                          onPressed: () {
-                            ref.read(StreamingVideosController).removeMovieById(
-                                streamingController.streamingVideos[index].id!);
-                          },
-                          icon: Icon(
-                            Icons.close,
-                            color: Colors.white,
-                          ))
-                    ],
-                  ),
+              itemBuilder: (context, index) {
+                var video = videos[index];
+                return Stack(
+                  alignment: AlignmentDirectional.topEnd,
+                  children: [
+                    Column(
+                      children: [
+                        Image.network(video.thumbnail.toString()),
+                        Text("${video.title}")
+                      ],
+                    ),
+                    IconButton(
+                        onPressed: () {
+                          ref
+                              .read(streamingVideosControllerProvider.notifier)
+                              .removeMovieById(video.id!);
+                        },
+                        icon: Icon(
+                          Icons.close,
+                          color: Colors.white,
+                        ))
+                  ],
+                );
+              },
               separatorBuilder: (context, index) => SizedBox(
                     height: 10,
                   ),
-              itemCount: streamingController.streamingVideos.length),
+              itemCount: videos.length),
     );
   }
 }
