@@ -18,16 +18,19 @@ class StreamingVideosController extends StateNotifier<bool> {
   final Ref _ref;
   StreamingVideosController(Ref ref)
       : _ref = ref,
-        super(false);
+        super(false) {
+    getStreamingVideo();
+  }
 
   int counter = 0;
 
   Future getStreamingVideo() async {
+    print("calling videos");
     state = true;
     Response response = await get(Uri.parse(
         'https://raw.githubusercontent.com/samih93/riverpod_tutorials/master/api.txt'));
     if (response.statusCode == 200) {
-      print(response.body);
+      // print(response.body);
       var data = jsonDecode(response.body);
       print((data as List).length);
 

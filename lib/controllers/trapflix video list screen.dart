@@ -18,9 +18,9 @@ class _VideoListScreenState extends ConsumerState<VideoListScreen> {
   @override
   void initState() {
     // TODO: implement initState
-    Future.delayed(Duration(milliseconds: 100)).then((value) {
-      ref.read(streamingVideosControllerProvider.notifier).getStreamingVideo();
-    });
+    // Future.delayed(Duration(milliseconds: 100)).then((value) {
+    //   ref.read(streamingVideosControllerProvider.notifier).getStreamingVideo();
+    // });
     super.initState();
   }
 
@@ -41,9 +41,12 @@ class _VideoListScreenState extends ConsumerState<VideoListScreen> {
         actions: [
           IconButton(
               onPressed: () {
-                ref
-                    .watch(streamingVideosControllerProvider.notifier)
-                    .getStreamingVideo();
+                //
+                ref.invalidate(streamingVideosControllerProvider);
+                Routemaster.of(context).push('/home-page-1');
+                // ref
+                //     .watch(streamingVideosControllerProvider.notifier)
+                //     .getStreamingVideo();
               },
               icon: Icon(Icons.add))
         ],
