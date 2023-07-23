@@ -5,6 +5,7 @@ import 'package:riverpod_tutorials/main.dart';
 import 'package:routemaster/routemaster.dart';
 
 import '../AutoDispose Modifier with timeout cashing/counter_screen.dart';
+import '../shared/enum.dart';
 
 class VideoListScreen extends ConsumerStatefulWidget {
   const VideoListScreen({super.key});
@@ -26,7 +27,7 @@ class _VideoListScreenState extends ConsumerState<VideoListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var isloading = ref.watch(streamingVideosControllerProvider);
+    var requestState = ref.watch(streamingVideosControllerProvider);
     var videos = ref.watch(videosProvider);
 
     return Scaffold(
@@ -51,7 +52,7 @@ class _VideoListScreenState extends ConsumerState<VideoListScreen> {
               icon: Icon(Icons.add))
         ],
       ),
-      body: isloading
+      body: requestState == RequestState.loading
           ? Center(child: CircularProgressIndicator())
           : ListView.separated(
               itemBuilder: (context, index) {
